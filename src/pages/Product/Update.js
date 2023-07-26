@@ -1,8 +1,9 @@
 import axios from 'apiService/axios';
 import { ErrorMessage, Field, Formik } from 'formik';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactQuill from 'react-quill';
-const Product = () => {
+import { useParams } from 'react-router-dom';
+const UpdateProduct = () => {
     const quill = [
         "header",
         'bold',
@@ -24,29 +25,12 @@ const Product = () => {
             ['clean'],
         ],
     }
-    const [images, setImages] = useState([]);
-
-    const handleImageChange = (event) => {
-        const files = event.target.files;
-        const imageArray = [];
-        for (let i = 0; i < files.length; i++) {
-            imageArray.push(files[i]);
-        }
-        setImages((prevImages) => {
-            const updatedImages = [...prevImages, ...imageArray];
-            return updatedImages;
-        });
-    };
+    const {id} =useParams();
     const Registerapi = async (values) => {
         try {
-            console.log(values);
-            const formData = new FormData();
-            formData.append('data', JSON.stringify(values));
-            for (let i = 0; i < images.length; i++) {
-                formData.append('productImage', images[i]);
-            }
-            const res = await axios.post(`/product/all`, formData);
-            const { status, data } = res;
+             console.log(values);
+            const res = await axios.patch(`/product/one/${id}`, values);
+            const { status } = res;
             console.log("submit data ", res);
             if (status === 200) {
                 // Do something on successful registration
@@ -56,24 +40,37 @@ const Product = () => {
             console.log(error.message);
         }
     };
+  
+    const [product,setProduct] = useState({})
+    useEffect(()=>{
+     axios.get(`/product/${id}`)
+     .then(res=>{
+       
+       setProduct(res?.data?.result)
+     })
+     .catch(err=>{
+      
+     })
+    },[id])
     return (
-            
+        <div  >
+            <div className="grid lg:grid-cols-2  grid-cols-1 ">
                 <div className=" ">
                     <div className="mr-20 ml-20 lg:ml-20 lg:mr-20 md:ml-8 md:mr-8">
                         <div className="text-center">
-                            <h1 className="mb-4 font-bold font-5xl font-sans text-black leading-10 uppercase">Product Added Form</h1>
+                            <h1 className="mb-4 font-bold font-5xl font-sans text-black leading-10 uppercase">Inside Form</h1>
                         </div>
                         <Formik
                             enableReinitialize
                             initialValues={{
-                                name: "",
-                                price: "",
-                                color: "",
-                                description: "",
-                                quantity: null,
-                                category: "",
-                                offerCategory: "",
-                                skwNo: ""
+                                name: product?.name|| "",
+                                price: product?.price||"",
+                                color: product?.color||"",
+                                description:product?.description|| "",
+                                quantity:product.quantity|| null,
+                                category:product?.category|| "",
+                                offerCategory:product?.offerCategory|| "",
+                                skwNo: product?.skwNo || ""
 
                             }}
                             validate={(values) => {
@@ -96,19 +93,7 @@ const Product = () => {
                                 /* and other goodies */
                             }) => (
                                 <form onSubmit={handleSubmit}   >
-                                    <div className="mb-4">
-                                        <label htmlFor="image4" className="block text-gray-700 text-sm font-bold mb-2">
-                                            Image 4
-                                        </label>
-                                        <input
-                                            required
-                                            type="file"
-                                            id="image4"
-                                            onChange={(event) => handleImageChange(event)}
-                                            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-                                            multiple
-                                        />
-                                    </div>
+                                     
                                     <div className="mb-4">
                                         <label htmlFor="name" className="block text-xl font-normal text-black leading-4">
                                             <span className="text-red-500">*</span> Name
@@ -146,7 +131,7 @@ const Product = () => {
                                         <ReactQuill
                                             id="description"
                                             name="description"
-                                            //   value={item.description}
+                                              value={values?.description}
                                             onChange={(content) => handleChange("description")(content)}
                                             modules={quillm}
                                             formats={quill}
@@ -243,9 +228,13 @@ const Product = () => {
                     </div>
 
                 </div>
-                
-            
+                <div>
+
+                </div>
+            </div>
+        </div>
+
     );
 };
 
-export default Product;
+export default UpdateProduct;
