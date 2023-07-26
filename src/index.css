@@ -1,0 +1,47 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body{
+    background-color: white !important;
+}
+ .inputs{
+  background-color: transparent !important;
+ }
+ .selects{
+    min-height: 12px !important;
+ }
+ .recharts-legend-item, .legend-item-0{
+    display: none !important;
+ }
+
+ .container-sk {
+   padding-right: 15px;
+   padding-left: 15px;
+   margin-right: auto;
+   margin-left: auto;
+ }
+ @media (min-width: 768px) {
+   .container-sk {
+     width: 720px;
+   }
+ }
+ @media (min-width: 992px) {
+   .container-sk {
+     width: 960px;
+   }
+   
+ }
+ @media (min-width: 1200px) {
+   .container-sk {
+     width: 1140px;
+   }
+ }
+
+
+ @media (min-width: 1400px) {
+   .container-sk {
+     width: 1320px;
+   }
+ }
+ 
