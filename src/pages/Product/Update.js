@@ -3,6 +3,7 @@ import { ErrorMessage, Field, Formik } from 'formik';
 import React, { useEffect, useState } from 'react';
 import ReactQuill from 'react-quill';
 import { useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
 const UpdateProduct = () => {
     const quill = [
         "header",
@@ -34,10 +35,12 @@ const UpdateProduct = () => {
             console.log("submit data ", res);
             if (status === 200) {
                 // Do something on successful registration
+                toast.success("update successfully")
             }
         } catch (error) {
             // Handle error
             console.log(error.message);
+            toast.error("update not successfully")
         }
     };
   
@@ -53,8 +56,6 @@ const UpdateProduct = () => {
      })
     },[id])
     return (
-        <div  >
-            <div className="grid lg:grid-cols-2  grid-cols-1 ">
                 <div className=" ">
                     <div className="mr-20 ml-20 lg:ml-20 lg:mr-20 md:ml-8 md:mr-8">
                         <div className="text-center">
@@ -228,12 +229,6 @@ const UpdateProduct = () => {
                     </div>
 
                 </div>
-                <div>
-
-                </div>
-            </div>
-        </div>
-
     );
 };
 
