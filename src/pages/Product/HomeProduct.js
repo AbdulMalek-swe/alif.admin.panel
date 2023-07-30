@@ -54,14 +54,55 @@ const HomeProduct = () => {
          })
          
       }
+      const [toggleProduct,setToggleProduct] = useState([])
+      const allProduct = (e) => {
+        if (e === "all") {
+          // "Select All" checkbox clicked
+          if (toggleProduct.length) {
+            // If all products are already selected, unselect all
+            if(toggleProduct.length===product.length){
+                setToggleProduct([]);
+            }
+            else{
+                setToggleProduct(product);
+            }
+            
+          } else {
+            // Otherwise, select all products
+            setToggleProduct([...product]);
+          }
+        } else {
+          // Individual checkbox clicked
+          const result = toggleProduct.includes(e)
+            ? toggleProduct.filter((item) => item._id !== e._id)
+            : [...toggleProduct, e];
+          setToggleProduct(result);
+        }
+      };
+      const deleteAll =async ()=>{
+        try {
+            // Send the data to the backend endpoint using Axios with the DELETE method
+            let ids=[1,2,3];
+            const response = await axios.delete('/product/all/delete', {
+              data: toggleProduct, // Pass the data in the request body
+            });
+      
+            // Handle the response from the backend
+            const data = response.data;
+            console.log(data); // You can log the response or handle it as needed
+          } catch (error) {
+          
+        }
+      }
     return (
         <div>
+
             <div className='flex justify-around'>
                 <Button variant="outlined" onClick={()=>setIsTrue(true)}>PRODUCT</Button>
                 <Button variant="outlined" className='mx-3 '  onClick={()=>setIsTrue(false)}>Post Product Data</Button>
             </div>
            {!isTrue && <Product/>}
-
+             <button onClick={()=>deleteAll()}>delete salla</button>
           { isTrue && 
           <table className="min-w-full bg-white">
           <thead>
@@ -70,6 +111,7 @@ const HomeProduct = () => {
                   <th className="py-2 px-4 border-b-2 border-gray-300 font-semibold text-left">Title</th>
                   <th className="py-2 px-4 border-b-2 border-gray-300 font-semibold text-left">Description</th>
                   <th className="py-2 px-4 border-b-2 border-gray-300 font-semibold text-left">Action</th>
+                  <th className="py-2 px-4 border-b-2 border-gray-300 font-semibold text-left"><input type='checkbox' checked={toggleProduct.length===product.length?true:false}  onChange={()=>allProduct("all")}/> </th>
               </tr>
           </thead>
           <tbody>
@@ -89,6 +131,7 @@ const HomeProduct = () => {
                   <AiFillDelete onClick={()=>{productDelete(item._id)}} className='cursor-pointer text-3xl'/> 
                
                    </td>
+                   <td className="py-2 px-4 border-b-2 border-gray-300 font-semibold text-left"><input type='checkbox' checked={toggleProduct.some(items=>items._id===item._id)} onChange={()=>allProduct(item)}/> </td>
               </tr>)}
               {/* Add more rows as needed */}
           </tbody>
